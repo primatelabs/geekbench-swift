@@ -92,7 +92,6 @@ final class SFFTWorkload : Workload {
   }
 
   override func worker() {
-    //    for var chunkOrigin = 0; chunkOrigin < self.size; chunkOrigin += self.chunkSize {
     for chunkOrigin in stride(from: 0, to: self.size, by: self.chunkSize) {
       reorderInputIntoOutput(chunkOrigin)
       executeInplaceFFTOnOutput(chunkOrigin)
@@ -106,7 +105,6 @@ final class SFFTWorkload : Workload {
     // Right shift requred to account for unused leading zeros in the UInt32
     let shiftCorrection = countLeadingZeros(chunkSize) + 1
 
-    //for var i : UInt32 = 0; i < chunkSize; ++i {
     for i in 0..<chunkSize {
       var o = i
       // Reverse the bits of o
