@@ -117,19 +117,19 @@ final class SFFTWorkload : Workload {
   }
 
   func executeInplaceFFTOnOutput(chunkOrigin : Int) {
-    self.fftWithOrigin(0, size: self.chunkSize, wStep: 1, output: &self.output)
+    self.fftWithOrigin(0, size: self.chunkSize, wStep: 1)
   }
 
-    func fftWithOrigin(origin : Int, size : Int,  wStep : Int, inout output:UnsafeMutablePointer<Complex>) {
+    func fftWithOrigin(origin : Int, size : Int,  wStep : Int) {
         
     if size == 4 {
-      fft4WithOrigin(origin, output: &output)
+      fft4WithOrigin(origin)
       return
     }
 
     let m = size / 2
-    fftWithOrigin(origin, size: m, wStep: 2 * wStep, output: &output)
-    fftWithOrigin(origin + m, size: m, wStep: 2 * wStep, output: &output)
+    fftWithOrigin(origin, size: m, wStep: 2 * wStep)
+    fftWithOrigin(origin + m, size: m, wStep: 2 * wStep)
 
     var wIndex = 0
     for offset in 0..<m {
@@ -145,7 +145,7 @@ final class SFFTWorkload : Workload {
   }
 
   // Compute the bottom 2 stages of the FFT recursion (FFTs of length 4 and 2)
-    func fft4WithOrigin(origin : Int, inout output:UnsafeMutablePointer<Complex>) {
+    func fft4WithOrigin(origin : Int) {
     
     var s0 = output[origin]
     var s1 = output[origin + 1]
