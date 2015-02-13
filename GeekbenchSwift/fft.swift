@@ -61,7 +61,7 @@ final class SFFTWorkload : Workload {
   var size : Int
   var chunkSize : Int
   var input : [Complex] = []
-  var output : ContiguousArray<Complex> = []
+  var output : [Complex] = []
   var wFactors : [Complex] = []
 
   init(size : Int, chunkSize : Int) {
@@ -69,7 +69,7 @@ final class SFFTWorkload : Workload {
     self.chunkSize = chunkSize
 
     self.input = [Complex](count: size, repeatedValue: Complex())
-    self.output = ContiguousArray<Complex>(count: size, repeatedValue: Complex())
+    self.output = [Complex](count: size, repeatedValue: Complex())
     
 
     // Precompute w factors
