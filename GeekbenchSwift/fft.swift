@@ -68,17 +68,9 @@ final class SFFTWorkload : Workload {
     self.size = size
     self.chunkSize = chunkSize
 
-    self.input.reserveCapacity(size)
-
-    for _ in 0..<size {
-      self.input.append(Complex())
-    }
-
-    self.output.reserveCapacity(chunkSize)
-
-    for _ in 0..<chunkSize {
-      self.output.append(Complex())
-    }
+    self.input = [Complex](count: size, repeatedValue: Complex())
+    self.output = [Complex](count: size, repeatedValue: Complex())
+    
 
     // Precompute w factors
     self.wFactors.reserveCapacity(chunkSize)
