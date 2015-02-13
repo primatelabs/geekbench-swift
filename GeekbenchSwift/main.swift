@@ -20,9 +20,9 @@ func printResult(result : WorkloadResult) {
     println("  \(rateString) (\(runtime) seconds)")
   }
 
-  let minRate = result.rates.reduce(Double.infinity, { min($0, $1) })
-  let maxRate = result.rates.reduce(0, { max($0, $1) })
-  let avgRate = result.rates.reduce(0, { $0 + $1 }) / Double(result.rates.count)
+  let minRate = result.rates.reduce(Double.infinity) { min($0, $1) }
+  let maxRate = result.rates.reduce(0) { max($0, $1) }
+  let avgRate = result.rates.reduce(0) { $0 + $1 } / Double(result.rates.count)
 
   let minString = result.workloadUnits.stringFromRate(minRate)
   let maxString = result.workloadUnits.stringFromRate(maxRate)

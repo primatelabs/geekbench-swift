@@ -4,7 +4,7 @@
 
 import Foundation
 
-class SFFTWorkload : Workload {
+final class SFFTWorkload : Workload {
   let pi = Float32(acos(-1.0))
 
   var size : Int
@@ -65,7 +65,7 @@ class SFFTWorkload : Workload {
 
       o >>= shiftCorrection
 
-      self.output[Int(o)].assign(self.input[Int(chunkOrigin + i)])
+      self.output[Int(o)].assign(self.input[chunkOrigin + Int(i)])
     }
   }
 
