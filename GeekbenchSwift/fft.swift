@@ -58,10 +58,10 @@ func - (left : Complex, right : Complex) -> Complex {
 final class SFFTWorkload : Workload {
   let pi = Float32(acos(-1.0))
 
-  var size : Int
-  var chunkSize : Int
-  var input : [Complex] = []
-  var output : [Complex] = []
+  let size : Int
+  let chunkSize : Int
+  var input : [Complex]
+  var output : UnsafeMutablePointer<Complex>
   var wFactors : [Complex] = []
 
   init(size : Int, chunkSize : Int) {
@@ -69,7 +69,8 @@ final class SFFTWorkload : Workload {
     self.chunkSize = chunkSize
 
     self.input = [Complex](count: size, repeatedValue: Complex())
-    self.output = [Complex](count: size, repeatedValue: Complex())
+    self.output = UnsafeMutablePointer<Complex>.alloc(size)
+    
     
 
     // Precompute w factors
@@ -82,6 +83,9 @@ final class SFFTWorkload : Workload {
     }
 
   }
+    deinit {
+        self.output.dealloc(size)
+    }
 
   override func worker() {
     for chunkOrigin in stride(from: 0, to: self.size, by: self.chunkSize) {
@@ -113,13 +117,10 @@ final class SFFTWorkload : Workload {
   }
 
   func executeInplaceFFTOnOutput(chunkOrigin : Int) {
-    
-    self.output.withUnsafeMutableBufferPointer { (inout output:UnsafeMutableBufferPointer<Complex>)->() in
-        self.fftWithOrigin(0, size: self.chunkSize, wStep: 1, output: &output)
-    }
+    self.fftWithOrigin(0, size: self.chunkSize, wStep: 1, output: &self.output)
   }
 
-    func fftWithOrigin(origin : Int, size : Int,  wStep : Int, inout output:UnsafeMutableBufferPointer<Complex>) {
+    func fftWithOrigin(origin : Int, size : Int,  wStep : Int, inout output:UnsafeMutablePointer<Complex>) {
         
     if size == 4 {
       fft4WithOrigin(origin, output: &output)
@@ -144,7 +145,7 @@ final class SFFTWorkload : Workload {
   }
 
   // Compute the bottom 2 stages of the FFT recursion (FFTs of length 4 and 2)
-    func fft4WithOrigin(origin : Int, inout output:UnsafeMutableBufferPointer<Complex>) {
+    func fft4WithOrigin(origin : Int, inout output:UnsafeMutablePointer<Complex>) {
     
     var s0 = output[origin]
     var s1 = output[origin + 1]
