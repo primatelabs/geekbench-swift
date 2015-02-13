@@ -113,38 +113,43 @@ final class SFFTWorkload : Workload {
   }
 
   func executeInplaceFFTOnOutput(chunkOrigin : Int) {
-    fftWithOrigin(0, size: chunkSize, wStep: 1)
+    
+    self.output.withUnsafeMutableBufferPointer { (inout output:UnsafeMutableBufferPointer<Complex>)->() in
+        self.fftWithOrigin(0, size: self.chunkSize, wStep: 1, output: &output)
+    }
   }
 
-  func fftWithOrigin(origin : Int, size : Int,  wStep : Int) {
+    func fftWithOrigin(origin : Int, size : Int,  wStep : Int, inout output:UnsafeMutableBufferPointer<Complex>) {
+        
     if size == 4 {
-      fft4WithOrigin(origin)
+      fft4WithOrigin(origin, output: &output)
       return
     }
 
     let m = size / 2
-    fftWithOrigin(origin, size: m, wStep: 2 * wStep)
-    fftWithOrigin(origin + m, size: m, wStep: 2 * wStep)
+    fftWithOrigin(origin, size: m, wStep: 2 * wStep, output: &output)
+    fftWithOrigin(origin + m, size: m, wStep: 2 * wStep, output: &output)
 
     var wIndex = 0
     for offset in 0..<m {
       let butterflyTop = origin + offset
-      let a = self.output[butterflyTop]
-      let b = self.wFactors[wIndex] * self.output[butterflyTop + m]
+      let a = output[butterflyTop]
+      let b = self.wFactors[wIndex] * output[butterflyTop + m]
 
-      self.output[butterflyTop] = a + b
-      self.output[butterflyTop + m] = a - b
+      output[butterflyTop] = a + b
+      output[butterflyTop + m] = a - b
 
       wIndex += wStep
     }
   }
 
   // Compute the bottom 2 stages of the FFT recursion (FFTs of length 4 and 2)
-  func fft4WithOrigin(origin : Int) {
-    var s0 = self.output[origin]
-    var s1 = self.output[origin + 1]
-    var t0 = self.output[origin + 2]
-    var t1 = self.output[origin + 3]
+    func fft4WithOrigin(origin : Int, inout output:UnsafeMutableBufferPointer<Complex>) {
+    
+    var s0 = output[origin]
+    var s1 = output[origin + 1]
+    var t0 = output[origin + 2]
+    var t1 = output[origin + 3]
     var tmp0 = Complex()
     var tmp1 = Complex()
 
@@ -166,11 +171,10 @@ final class SFFTWorkload : Workload {
     t0.assign(tmp0 - t0)
     t1.assign(tmp1 - t1)
 
-    self.output[origin] = s0;
-    self.output[origin + 1] = s1;
-    self.output[origin + 2] = t0;
-    self.output[origin + 3] = t1;
-
+    output[origin] = s0;
+    output[origin + 1] = s1;
+    output[origin + 2] = t0;
+    output[origin + 3] = t1;
   }
 
   func countLeadingZeros(value : UInt32) -> UInt32 {
