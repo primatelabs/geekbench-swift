@@ -135,7 +135,7 @@ final class SFFTWorkload : Workload {
     fftWithOrigin(origin + m, size: m, wStep: 2 * wStep)
 
     var wIndex = 0
-    for var offset = 0; offset < m; ++offset {
+    for offset in 0..<m {
       let butterflyTop = origin + offset
       let a = self.output[butterflyTop]
       let b = self.wFactors[wIndex] * self.output[butterflyTop + m]
