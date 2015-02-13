@@ -65,7 +65,7 @@ class SFFTWorkload : Workload {
 
       o >>= shiftCorrection
 
-      self.output[Int(o)].assign(self.input[Int(chunkOrigin + i)])
+      self.output[Int(o)].assign(self.input[chunkOrigin + Int(i)])
     }
   }
 
