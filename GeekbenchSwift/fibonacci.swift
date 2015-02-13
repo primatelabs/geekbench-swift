@@ -4,7 +4,7 @@
 
 import Foundation
 
-class FibonacciWorkload : Workload {
+final class FibonacciWorkload : Workload {
   var n : UInt
   var output : UInt
   var nodes : UInt

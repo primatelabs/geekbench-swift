@@ -4,7 +4,7 @@
 
 import Foundation
 
-class MandelbrotWorkload : Workload {
+final class MandelbrotWorkload : Workload {
   var width : UInt
   var height : UInt
   var output : [UInt8]? = nil

@@ -24,7 +24,7 @@ struct Matrix {
   }
 }
 
-class SGEMMWorkload : Workload {
+final class SGEMMWorkload : Workload {
   var matrixSize : Int = 0
   var blockSize : Int = 0
   final var A : Matrix

@@ -4,7 +4,7 @@
 
 import Foundation
 
-class SFFTWorkload : Workload {
+final class SFFTWorkload : Workload {
   let pi = Float32(acos(-1.0))
 
   var size : Int
