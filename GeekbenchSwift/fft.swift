@@ -83,16 +83,16 @@ final class SFFTWorkload : Workload {
     }
 
   }
-    deinit {
-      self.output.dealloc(chunkSize)
-    }
+
+  deinit {
+    self.output.dealloc(chunkSize)
+  }
 
   override func worker() {
     for chunkOrigin in stride(from: 0, to: self.size, by: self.chunkSize) {
       reorderInputIntoOutput(chunkOrigin)
       executeInplaceFFTOnOutput(chunkOrigin)
     }
-
   }
 
   func reorderInputIntoOutput(chunkOrigin : Int) {
@@ -120,7 +120,7 @@ final class SFFTWorkload : Workload {
     self.fftWithOrigin(0, size: self.chunkSize, wStep: 1)
   }
 
-    func fftWithOrigin(origin : Int, size : Int,  wStep : Int) {
+  func fftWithOrigin(origin : Int, size : Int,  wStep : Int) {
         
     if size == 4 {
       fft4WithOrigin(origin)
@@ -145,7 +145,7 @@ final class SFFTWorkload : Workload {
   }
 
   // Compute the bottom 2 stages of the FFT recursion (FFTs of length 4 and 2)
-    func fft4WithOrigin(origin : Int) {
+  func fft4WithOrigin(origin : Int) {
     
     var s0 = output[origin]
     var s1 = output[origin + 1]
