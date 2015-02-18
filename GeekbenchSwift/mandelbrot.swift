@@ -37,7 +37,7 @@ final class MandelbrotWorkload : Workload {
 
         var k = 0
         for _ in 0..<255 {
-          var tr = zr
+          let tr = zr
 
           zr = zr * zr - (zc * zc)
           zc = 2.0 * tr * zc
