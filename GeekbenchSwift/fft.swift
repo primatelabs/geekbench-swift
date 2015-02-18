@@ -58,27 +58,20 @@ func - (left : Complex, right : Complex) -> Complex {
 final class SFFTWorkload : Workload {
   let pi = Float32(acos(-1.0))
 
-  var size : Int
-  var chunkSize : Int
-  var input : [Complex] = []
-  var output : [Complex] = []
+  let size : Int
+  let chunkSize : Int
+  var input : [Complex]
+  var output : UnsafeMutablePointer<Complex>
   var wFactors : [Complex] = []
 
   init(size : Int, chunkSize : Int) {
     self.size = size
     self.chunkSize = chunkSize
 
-    self.input.reserveCapacity(size)
-
-    for _ in 0..<size {
-      self.input.append(Complex())
-    }
-
-    self.output.reserveCapacity(chunkSize)
-
-    for _ in 0..<chunkSize {
-      self.output.append(Complex())
-    }
+    self.input = [Complex](count: size, repeatedValue: Complex())
+    self.output = UnsafeMutablePointer<Complex>.alloc(size)
+    
+    
 
     // Precompute w factors
     self.wFactors.reserveCapacity(chunkSize)
@@ -90,6 +83,9 @@ final class SFFTWorkload : Workload {
     }
 
   }
+    deinit {
+        self.output.dealloc(size)
+    }
 
   override func worker() {
     for chunkOrigin in stride(from: 0, to: self.size, by: self.chunkSize) {
@@ -121,10 +117,11 @@ final class SFFTWorkload : Workload {
   }
 
   func executeInplaceFFTOnOutput(chunkOrigin : Int) {
-    fftWithOrigin(0, size: chunkSize, wStep: 1)
+    self.fftWithOrigin(0, size: self.chunkSize, wStep: 1)
   }
 
-  func fftWithOrigin(origin : Int, size : Int,  wStep : Int) {
+    func fftWithOrigin(origin : Int, size : Int,  wStep : Int) {
+        
     if size == 4 {
       fft4WithOrigin(origin)
       return
@@ -137,22 +134,23 @@ final class SFFTWorkload : Workload {
     var wIndex = 0
     for offset in 0..<m {
       let butterflyTop = origin + offset
-      let a = self.output[butterflyTop]
-      let b = self.wFactors[wIndex] * self.output[butterflyTop + m]
+      let a = output[butterflyTop]
+      let b = self.wFactors[wIndex] * output[butterflyTop + m]
 
-      self.output[butterflyTop] = a + b
-      self.output[butterflyTop + m] = a - b
+      output[butterflyTop] = a + b
+      output[butterflyTop + m] = a - b
 
       wIndex += wStep
     }
   }
 
   // Compute the bottom 2 stages of the FFT recursion (FFTs of length 4 and 2)
-  func fft4WithOrigin(origin : Int) {
-    var s0 = self.output[origin]
-    var s1 = self.output[origin + 1]
-    var t0 = self.output[origin + 2]
-    var t1 = self.output[origin + 3]
+    func fft4WithOrigin(origin : Int) {
+    
+    var s0 = output[origin]
+    var s1 = output[origin + 1]
+    var t0 = output[origin + 2]
+    var t1 = output[origin + 3]
     var tmp0 = Complex()
     var tmp1 = Complex()
 
@@ -174,11 +172,10 @@ final class SFFTWorkload : Workload {
     t0.assign(tmp0 - t0)
     t1.assign(tmp1 - t1)
 
-    self.output[origin] = s0;
-    self.output[origin + 1] = s1;
-    self.output[origin + 2] = t0;
-    self.output[origin + 3] = t1;
-
+    output[origin] = s0;
+    output[origin + 1] = s1;
+    output[origin + 2] = t0;
+    output[origin + 3] = t1;
   }
 
   func countLeadingZeros(value : UInt32) -> UInt32 {
