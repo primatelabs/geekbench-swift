@@ -69,7 +69,7 @@ final class SFFTWorkload : Workload {
     self.chunkSize = chunkSize
 
     self.input = [Complex](count: size, repeatedValue: Complex())
-    self.output = UnsafeMutablePointer<Complex>.alloc(size)
+    self.output = UnsafeMutablePointer<Complex>.alloc(chunkSize)
     
     
 
@@ -84,7 +84,7 @@ final class SFFTWorkload : Workload {
 
   }
     deinit {
-        self.output.dealloc(size)
+      self.output.dealloc(chunkSize)
     }
 
   override func worker() {
