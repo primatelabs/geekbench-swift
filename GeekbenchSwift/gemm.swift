@@ -64,7 +64,7 @@ final class SGEMMWorkload : Workload {
                 scratch += a * b
               }
 
-              C[i0, j0] = scratch
+//              C[i0, j0] = scratch
             }
           }
 
@@ -76,11 +76,11 @@ final class SGEMMWorkload : Workload {
   override func reset() {
     for i in 0..<self.matrixSize {
       for j in 0..<self.matrixSize {
-        let index = self.matrixSize * i + j
+//        let index = self.matrixSize * i + j
         let value = Float((i + j * self.matrixSize) % 10)
-        A[i, j] = value
-        B[i, j] = value
-        C[i, j] = 0.0
+//        A[i, j] = value
+//        B[i, j] = value
+//        C[i, j] = 0.0
       }
     }
   }

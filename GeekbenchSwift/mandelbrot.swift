@@ -25,8 +25,8 @@ final class MandelbrotWorkload : Workload {
     let sr = 2.0 / Float(self.width)
     let sc = -2.0 / Float(self.height)
 
-    let w = Int(self.width)
-    let h = Int(self.height)
+//    let w = Int(self.width)
+//    let h = Int(self.height)
 
     for x : UInt in 0..<self.width {
       for y : UInt in 0..<self.height {
