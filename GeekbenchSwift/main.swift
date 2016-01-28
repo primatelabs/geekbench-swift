@@ -7,17 +7,17 @@ import Foundation
 
 let workloadFactories = [
   {() -> Workload in return MandelbrotWorkload(width: 800, height: 800) },
-  {() -> Workload in return SGEMMWorkload(matrixSize: 896, blockSize: 512 / sizeof(Float32)) },
+//  {() -> Workload in return SGEMMWorkload(matrixSize: 896, blockSize: 512 / sizeof(Float32)) },
   {() -> Workload in return SFFTWorkload(size: 8 * 1024 * 1024, chunkSize: 4096)},
   {() -> Workload in return FibonacciWorkload(n: 36)},
 ]
 
 
 func printResult(result : WorkloadResult) {
-  println(result.workloadName)
-  for (rate, runtime) in Zip2(result.rates, result.runtimes) {
+  print(result.workloadName)
+  for (rate, runtime) in Zip2Sequence(result.rates, result.runtimes) {
     let rateString = result.workloadUnits.stringFromRate(rate)
-    println("  \(rateString) (\(runtime) seconds)")
+    print("  \(rateString) (\(runtime) seconds)")
   }
 
   let minRate = result.rates.reduce(Double.infinity) { min($0, $1) }
@@ -28,16 +28,16 @@ func printResult(result : WorkloadResult) {
   let maxString = result.workloadUnits.stringFromRate(maxRate)
   let avgString = result.workloadUnits.stringFromRate(avgRate)
 
-  println()
-  println("  Min rate: \(minString)")
-  println("  Max rate: \(maxString)")
-  println("  Avg rate: \(avgString)")
-  println()
+  print("")
+  print("  Min rate: \(minString)")
+  print("  Max rate: \(maxString)")
+  print("  Avg rate: \(avgString)")
+  print("")
 }
 
 func main() {
   for workloadFactory in workloadFactories {
-    var workload = workloadFactory()
+    let workload = workloadFactory()
     let result = workload.run()
     printResult(result)
   }

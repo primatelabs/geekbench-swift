@@ -33,7 +33,7 @@ class Workload  {
     for _ in 1...8 {
       self.reset()
 
-      var timer = Timer()
+      let timer = Timer()
       self.worker()
       let elapsed = timer.elapsed()
 

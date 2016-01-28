@@ -43,6 +43,7 @@
 		00D6F5C719D20652007A19E5 /* workloadUnits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = workloadUnits.swift; sourceTree = "<group>"; };
 		00D6F5C919D2194F007A19E5 /* gemm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = gemm.swift; sourceTree = "<group>"; };
 		00DB67E01A2E741200A986DD /* fft.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = fft.swift; sourceTree = "<group>"; };
+		189F37C81BE1A4D1007874EC /* ReadMe */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +60,7 @@
 		004F805719D0BF1F0054E320 = {
 			isa = PBXGroup;
 			children = (
+				189F37C81BE1A4D1007874EC /* ReadMe */,
 				004F806219D0BF1F0054E320 /* GeekbenchSwift */,
 				004F806119D0BF1F0054E320 /* Products */,
 			);
@@ -115,7 +117,9 @@
 		004F805819D0BF1F0054E320 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastSwiftMigration = 0710;
+				LastSwiftUpdateCheck = 0710;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Primate Labs";
 				TargetAttributes = {
 					004F805F19D0BF1F0054E320 = {
@@ -239,6 +243,7 @@
 				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Ounchecked";
 			};
@@ -247,6 +252,7 @@
 		004F806819D0BF1F0054E320 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -254,6 +260,7 @@
 		004F806919D0BF1F0054E320 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

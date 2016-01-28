@@ -41,8 +41,8 @@ enum WorkloadUnits {
       outRate /= divisor
     }
 
-    var outRateString = NSString(format: "%.2f", outRate)
-    var units = self.string()
+    let outRateString = NSString(format: "%.2f", outRate)
+    let units = self.string()
     return "\(outRateString) \(prefix)\(units)"
   }
 }

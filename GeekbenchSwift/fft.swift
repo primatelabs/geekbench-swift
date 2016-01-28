@@ -3,7 +3,7 @@
 // can be found in the LICENSE file.
 import Foundation
 
-struct Complex : Printable {
+struct Complex : CustomStringConvertible {
     internal var real : Float32
     internal var imaginary : Float32
     var description: String {
@@ -76,8 +76,8 @@ final class SFFTWorkload : Workload {
     // Precompute w factors
     self.wFactors.reserveCapacity(chunkSize)
     var theta : Float32 = 0
-    var mult : Float32 = -2.0 * self.pi / Float32(chunkSize)
-    for i in 0..<chunkSize {
+    let mult : Float32 = -2.0 * self.pi / Float32(chunkSize)
+    for _ in 0..<chunkSize {
       self.wFactors.append(Complex(real: cos(theta) as Float32, imaginary: sin(theta) as Float32))
       theta += mult
     }
@@ -89,7 +89,7 @@ final class SFFTWorkload : Workload {
   }
 
   override func worker() {
-    for chunkOrigin in stride(from: 0, to: self.size, by: self.chunkSize) {
+    for chunkOrigin in 0.stride(to: self.size, by: self.chunkSize) {
       reorderInputIntoOutput(chunkOrigin)
       executeInplaceFFTOnOutput(chunkOrigin)
     }
